@@ -1,4 +1,3 @@
-//Add comments
 package Demo.Bug.Tracker.service;
 
 import Demo.Bug.Tracker.exception.InvalidFieldException;
@@ -19,6 +18,7 @@ import Demo.Bug.Tracker.Repository.MessageRepository;
 import Demo.Bug.Tracker.Repository.ProjectRepository;
 import Demo.Bug.Tracker.Repository.ReportRepository;
 import Demo.Bug.Tracker.Repository.StaffRepository;
+import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 
 //import com.capgemini.exception.IncorrectLoginCredentialsException;
@@ -45,7 +45,7 @@ public class AdministratorService {
 
 	@Autowired
 	ProjectRepository projectRepository;
-	
+
 	@Autowired
 	ReportRepository reportRepository;
 
@@ -53,124 +53,152 @@ public class AdministratorService {
 	AdministratorRepository adminRepository;
 	private static final Logger LOG = LoggerFactory.getLogger(AdministratorService.class);
 
-	//Admin login
-	public Administrator loginAdmin(int adminId, String password) {
+	// Admin login
+	public Administrator loginAdmin(int adminId, String password) throws IncorrectLoginCredentialsException {
 		Administrator admin = null;
 		if (adminRepository.existsById(adminId)
 				&& adminRepository.findById(adminId).get().getAdminPassword().equals(password)) {
 			admin = adminRepository.findById(adminId).get();
-			// Logger.info("Admin login is successfull");
+			LOG.info("Admin login is successfull");
+		} else {
+			throw new IncorrectLoginCredentialsException("Invalid Credentials");
 		}
 		return admin;
 	}
 
-	// project tasks
+	// Project Functionalities
+
 	public List<Project> getAllProject() {
 		LOG.info("getAllProject");
 		return (List<Project>) projectRepository.findAll();
 	}
 
-	//Search project using projectId by admin
+	// Search project using projectId by admin
 	public Project searchProjectById(int pid) {
-		LOG.info("getEmployeeById " + pid);
 		Optional<Project> optProj = projectRepository.findById(pid);
 		if (optProj.isEmpty()) {
 			LOG.error("Employee not found.");
-			throw new ProjectNotFoundException("");
+			throw new ProjectNotFoundException("Not able to search Project");
 		} else
 			return optProj.get();
 	}
 
-	//Add project using projectId by admin
+	// Add project using projectId by admin
 	public Project addProject(Project project) {
-		LOG.info("addProject");
 		try {
 			return projectRepository.save(project);
 		} catch (IllegalArgumentException iae) {
-			LOG.error(iae.getMessage());
+			LOG.error("Not able to add Project" + iae.getMessage());
 			return null;
 		}
 	}
 
-	//Update project using projectId by admin
+	// Update project using projectId by admin
 	public Project updateProjectById(Project projectID) {
-		LOG.info("updateProject by id");
-		return projectRepository.save(projectID);
+		try {
+			return projectRepository.save(projectID);
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to update Project" + iae.getMessage());
+			return null;
+		}
 	}
 
-	//Delete project using projectId by admin
+	// Delete project using projectId by admin
 	public int deleteProject(int pid) { // pid = ProjectID
-		LOG.info("deleteProject");
-		projectRepository.deleteById(pid);
-		return pid;
+		try {
+			projectRepository.deleteById(pid);
+			return pid;
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to delete Project" + iae.getMessage());
+			return 0;
+		}
 	}
 
-	// staff tasks
-	//To view all staff by admin
+	// Staff Functionalities
+
+	// To view all staff by admin
 	public List<Staff> getAllStaff() {
 		LOG.info("get all Staff");
 		return (List<Staff>) staffRepository.findAll();
 	}
 
-	//To add new staff by admin
+	// To add new staff by admin
 	public Staff addNewStaff(Staff staff) {
-		LOG.info("Add staff");
-		return staffRepository.save(staff);
+		try {
+			return staffRepository.save(staff);
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to add Staff" + iae.getMessage());
+			return null;
+		}
 	}
 
-	//To update staff by admin
+	// To update staff by admin
 	public Staff updateStaffById(Staff staffId) {
-		LOG.info("Update a staff detail");
-		return staffRepository.save(staffId);
+		try {
+			return staffRepository.save(staffId);
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to Update Staff" + iae.getMessage());
+			return null;
+		}
 	}
 
-	//To delete staff by admin
+	// To delete staff by admin
 	public Staff deleteStaff(Staff staffId) {
-		LOG.info("Delete a staff");
-		staffRepository.delete(staffId);
-		return staffId;
+		try {
+			staffRepository.delete(staffId);
+			return staffId;
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to delete Staff" + iae.getMessage());
+			return null;
+		}
 	}
-	
-	//search staff using staff Id
-	public Staff searchStaffById(int staffId) {
-        LOG.info("searchStaffById " + staffId);
-        Optional<Staff> optStaff = staffRepository.findById(staffId);
-        if (optStaff.isEmpty()) {
-            LOG.error("Staff not found.");
-            throw new StaffNotFoundException("Staff is not present in database");
-        } else
-            return optStaff.get();
-    }
 
-	//Bug tasks
-	//to view all bugs by admin
+	// search staff using staff Id
+	public Staff searchStaffById(int staffId) {
+		LOG.info("searchStaffById " + staffId);
+		Optional<Staff> optStaff = staffRepository.findById(staffId);
+		if (optStaff.isEmpty()) {
+			LOG.error("Staff not found.");
+			throw new StaffNotFoundException("Not able to search Staff");
+		} else
+			return optStaff.get();
+	}
+
+	// Bug Functionalities
+
+	// to view all bugs by admin
 	public List<Bug> getAllBugs() {
 		LOG.info("Get all bugs");
 		return (List<Bug>) bugRepository.findAll();
 	}
 
-	// search Bug By Id 
+	// search Bug By Id
 	public Bug searchBugById(int bugId) {
-		LOG.info("searchBugById " + bugId);
 		Optional<Bug> optBug = bugRepository.findById(bugId);
 		if (optBug.isEmpty()) {
 			LOG.error("Bug not found.");
-			throw new ProjectNotFoundException("");
+			throw new BugNotFoundException("Not able to find Bug");
 		} else
 			return optBug.get();
 	}
 
-	// message ops
-	//add message
+	// Message Functionalities
+
+	// add message
 	public Message addMessage(Message message) {
-		LOG.info("Add message");
-		return messageRepository.save(message);
+		try {
+			return messageRepository.save(message);
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to add Message" + iae.getMessage());
+			return null;
+		}
 	}
 
-	//REPORT TASK
-	//View all project reports
-    public List<Report> getAllReports() {
-        LOG.info("Get all bugs");
-        return (List<Report>) reportRepository.findAll();
-    }
+	// Report Functionalities
+
+	// View all project reports
+	public List<Report> getAllReports() {
+		LOG.info("Get all bugs");
+		return (List<Report>) reportRepository.findAll();
+	}
 }

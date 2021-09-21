@@ -45,40 +45,40 @@ public class StaffService {
   //To add project Report by staff
 	public Report addProjectReport(Report report) {
 		LOG.info("Add report");
+		try {
 		return reportRepository.save(report);
+		}catch(IllegalArgumentException iae) {
+			LOG.error("Not able to add project report"+iae.getMessage());
+			return null;
+		}
 	}
 
 	//To update project Report by staff
 	public Report updateReport(Report projectID) {
 		LOG.info("update report by Project ID");
+		try {
 		return reportRepository.save(projectID);
+		}catch(IllegalArgumentException iae) {
+			LOG.error("Not able to update project report "+iae.getMessage());
+			return null;
+		}
 	}
 
 	//To delete project Report by staff
 	public int deleteReport(int reportId) {
 		LOG.info("deleteProject");
+		try {
 		reportRepository.deleteById(reportId);
 		return reportId;
+		}catch(IllegalArgumentException iae) {
+			LOG.error("Not able to delete project report"+iae.getMessage());
+			return 0;
+		}
 	}
-//	 public Report searchCompletedProjectReportById(Report status) {
-//	        LOG.info("searchBugById " + status);
-//	        Optional<Report> optReport = statusRepository.findById(status);
-//	        if (optReport.isEmpty()) {
-//	            LOG.info("Get status");
-//	        } else
-//	            return optReport.get();
-//	    }
-//	 public Report searchReportById(String status) {
-//	        LOG.info("searchBugById " + status);
-//	        List<Report> optBug = reportRepository.findByStatus(status);
-//	        if (optBug.isEmpty()) {
-//	            LOG.error("Bug not found.");
-//	             } else
-//	            return optBug.get(status);
-//	    }
 
-	//staff to staff tasks
-	// PROJECT TASK FOR STAFF
+
+	
+	// PROJECT Functionalities FOR STAFF
 	// view assigned project by staff id
 	public Project ViewAssignedProjectByStaffID(int staffId) {
         LOG.info("ViewAssignedProjectByStaffID " + staffId);
@@ -93,7 +93,12 @@ public class StaffService {
 	//assign projects to other staff using staff Id
     public Project AssignProjectToOtherStaffUsingID(Project staffId) {
         LOG.info("updateProject by id");
+        try {
         return projectRepository.save(staffId);
+        }catch(IllegalArgumentException iae) {
+			LOG.error("Not able to assign project to other staff using id "+iae.getMessage());
+			return null;
+		}
     }
 
 	public Report searchReportByProjectID(int projectID) {
@@ -101,7 +106,7 @@ public class StaffService {
 		Optional<Report> optreport = reportRepository.findById(projectID);
 		if (optreport.isEmpty()) {
 			LOG.error("Bug not found.");
-			throw new ProjectNotFoundException("");
+			throw new ProjectNotFoundException("Not able to search report by project ID");
 		} else
 			return optreport.get();
 	}

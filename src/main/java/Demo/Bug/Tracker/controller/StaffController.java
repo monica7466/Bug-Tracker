@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
+import Demo.Bug.Tracker.exception.InvalidFieldException;
 import Demo.Bug.Tracker.exception.NoSuchRecordException;
 import Demo.Bug.Tracker.exception.ProjectNotFoundException;
 import Demo.Bug.Tracker.exception.ReportNotFoundException;
+import Demo.Bug.Tracker.exception.StaffNotFoundException;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Project;
 import Demo.Bug.Tracker.model.Report;
@@ -48,20 +50,20 @@ public class StaffController {
 
 	// Report tasks for report
 	@PostMapping("/report/AddProjectReport")
-	public Report addProjectReport(@RequestBody Report report) {
+	public Report addProjectReport(@RequestBody Report report)throws InvalidFieldException {
 		LOG.info("addProjectReport");
 		return staffService.addProjectReport(report);
 	}
 
 	//To update report by staff for admin and user
 	@PutMapping("/report/updateReport/{projectID}")
-	public Report updateReport(@RequestBody Report projectID) {
+	public Report updateReport(@RequestBody Report projectID) throws InvalidFieldException{
 		return staffService.updateReport(projectID);
 	}
 
 	//To delete report by staff 
 	@DeleteMapping("/Report/deleteReport/{reportId}") // InvalidId
-	public int deleteReport(@PathVariable int reportId) {
+	public int deleteReport(@PathVariable int reportId)throws ReportNotFoundException {
 		LOG.info("deleteProject");
 		return staffService.deleteReport(reportId);
 	}
@@ -76,12 +78,12 @@ public class StaffController {
 
 	//view all staff members
 	@GetMapping("/Staff/viewAllStaff")
-	public List<Staff> viewAllStaff() throws NoSuchRecordException {
+	public List<Staff> viewAllStaff() throws StaffNotFoundException {
 		System.out.println("viewAllStaff");
 		return staffService.viewAllStaff();
 	}
 
-	// view assigned project with staffId                         *****
+	// view assigned project with staffId                      
 	@GetMapping("/ViewAssignedProject/{staffId}")
 	public ResponseEntity<Project> viewAssignedProject(@PathVariable int staffId) throws ProjectNotFoundException {
 		LOG.info("get Project");
@@ -99,7 +101,7 @@ public class StaffController {
 	
 	//view all reports by staff
 	@GetMapping("/Report/getAllReport")
-	public List<Report> getAllReport() throws NoSuchRecordException {
+	public List<Report> getAllReport() throws ReportNotFoundException {
 		System.out.println("get all bugs");
 		return staffService.getAllReport();
 

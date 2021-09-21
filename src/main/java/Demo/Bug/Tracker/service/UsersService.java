@@ -39,24 +39,39 @@ public class UsersService {
 		return user;
 	}
 
-	// user tasks on bugs
+	// User Funtionalities on bugs
 	//To add bug by user
 	public Bug addBug(Bug bug) {
 		LOG.info("Add bug");
+		try {
 		return bugRepository.save(bug);
+		}catch(IllegalArgumentException iae) {
+			LOG.error("Not able to add bug"+iae.getMessage());
+			return null;
+		}
 	}
 
 	//To update bug by user
 	public Bug updateBugById(Bug bugId) {
 		LOG.info("update bug by ID");
+		try {
 		return bugRepository.save(bugId);
+		}catch(IllegalArgumentException iae) {
+			LOG.error("Not able to update bug"+iae.getMessage());
+			return null;
+		}
 	}
 
 	//To delete bug by user
 	public int deleteBugById(int bugId) {
-		LOG.info("delete bug");
+		LOG.info("Delete bug");
+		try {
 		bugRepository.deleteById(bugId);
 		return bugId;
+		}catch(IllegalArgumentException iae) {
+			LOG.error("Not able to delete bug"+iae.getMessage());
+			return 0;
+		}
 	}
 	
 	// search bugs by bug Id
@@ -70,7 +85,7 @@ public class UsersService {
             return optBug.get();
     }
 
-	// message tasks
+	// Message Functionalities
 	//To view message by user
 	public List<Message> getMessage() {
 		LOG.info("get messages");
@@ -80,8 +95,13 @@ public class UsersService {
 	//To delete message by user
 	public int deleteMessageById(int messageId) {
 		LOG.info("delete Message");
+		try {
 		messageRepository.deleteById(messageId);
 		return messageId;
+		}catch(IllegalArgumentException iae) {
+			LOG.error("Not able to delete "+iae.getMessage());
+			return 0;
+		}
 	}
 
 

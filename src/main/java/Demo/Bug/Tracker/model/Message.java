@@ -15,22 +15,15 @@ public class Message {
 	@Column(name = "MESSAGE_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int messageId;
-	
+
 	@Column(name = "MESSAGES", length = 100)
 	private String messages;
-	
-	@JoinColumn(name = "USER_ID", nullable = false)
-    private int userId;
-	
-	@JoinColumn(name = "ADMIN_ID", nullable = false)
-    private int adminId;
 
-	public Message(int messageId, String messages, int userId, int adminId) {
+	public Message(int messageId, String messages) {
 		super();
 		this.messageId = messageId;
 		this.messages = messages;
-		this.userId = userId;
-		this.adminId = adminId;
+
 	}
 
 	public Message() {
@@ -53,27 +46,9 @@ public class Message {
 		this.messages = messages;
 	}
 
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
-	public int getAdminId() {
-		return adminId;
-	}
-
-	public void setAdminId(int adminId) {
-		this.adminId = adminId;
-	}
-
 	@Override
 	public String toString() {
-		return "Message [messageId=" + messageId + ", messages=" + messages + ", userId=" + userId + ", adminId="
-				+ adminId + "]";
+		return "Message [messageId=" + messageId + ", messages=" + messages + "]";
 	}
-	
-	
+
 }
