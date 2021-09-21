@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 import Demo.Bug.Tracker.exception.NoSuchRecordException;
 import Demo.Bug.Tracker.model.Bug;
@@ -32,6 +33,7 @@ public class UsersController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AdministratorService.class);
 	
+	//User Login
 	@PostMapping(path = "/UsersLogin")
     public ResponseEntity<Users> usersLogin(@RequestBody Users user)
             throws IncorrectLoginCredentialsException{
@@ -41,22 +43,27 @@ public class UsersController {
     }
 	
 	//user tasks on bugs
+	//add bug
 	@PostMapping("/bug/addBug")
 	public Bug addBug(@RequestBody Bug bug) throws NoSuchRecordException{
 		return usersService.addBug(bug);
 	}
-
-//	@GetMapping("/bug/getBugById")
-//	public ResponseEntity<Bug> getBugById(@PathVariable Bug bugId) {
-//		Bug bug = usersService.getBugById(bugId);
-//		return new ResponseEntity<Bug>(bug, HttpStatus.OK);
-//	}
 	
+	//search bugs by Id
+	@GetMapping("/Bug/searchBugs{bugId}")
+    public ResponseEntity<Bug> searchBugs(@PathVariable int bugId) throws BugNotFoundException{
+        LOG.info("Search bugs by id");
+        Bug bug = usersService.searchBugByBugId(bugId);
+        return new ResponseEntity<Bug>(bug, HttpStatus.OK);
+    }
+	
+	//To update bug using bugId by user
 	@PutMapping("/bug/updateBug/{bugId}")
 	public Bug updateBugById(@RequestBody Bug bugId) {
 		return usersService.updateBugById(bugId);
 	}
 	
+	//To delete bug using bugId by user
 	@DeleteMapping("/bug/deleteBugById/{bugId}")
 	public int deleteBugById(@PathVariable int bugId) {
 		LOG.info("Delte bug");
@@ -64,14 +71,17 @@ public class UsersController {
 	}
 	
 	//message tasks
+	//view message
 	@GetMapping("/message/getMessage")
 	public List<Message> getMessage() {
 		return usersService.getMessage();
 	}
 	
+	//To delete message using messageId by user
 	@DeleteMapping("/bug/deleteMessageById/{messageId}")
 	public int deleteMessageById(@PathVariable int messageId) {
 		LOG.info("Delete message");
 		return usersService.deleteMessageById(messageId);
 	}
+
 }

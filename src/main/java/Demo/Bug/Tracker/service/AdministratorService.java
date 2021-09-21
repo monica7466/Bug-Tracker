@@ -3,6 +3,7 @@ package Demo.Bug.Tracker.service;
 
 import Demo.Bug.Tracker.exception.InvalidFieldException;
 import Demo.Bug.Tracker.exception.ProjectNotFoundException;
+import Demo.Bug.Tracker.exception.StaffNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import Demo.Bug.Tracker.Repository.AdministratorRepository;
 import Demo.Bug.Tracker.Repository.BugRepository;
 import Demo.Bug.Tracker.Repository.MessageRepository;
 import Demo.Bug.Tracker.Repository.ProjectRepository;
+import Demo.Bug.Tracker.Repository.ReportRepository;
 import Demo.Bug.Tracker.Repository.StaffRepository;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 
@@ -26,6 +28,7 @@ import Demo.Bug.Tracker.model.Administrator;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
 import Demo.Bug.Tracker.model.Project;
+import Demo.Bug.Tracker.model.Report;
 //import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Staff;
 
@@ -42,29 +45,15 @@ public class AdministratorService {
 
 	@Autowired
 	ProjectRepository projectRepository;
+	
+	@Autowired
+	ReportRepository reportRepository;
 
 	@Autowired
 	AdministratorRepository adminRepository;
 	private static final Logger LOG = LoggerFactory.getLogger(AdministratorService.class);
 
-//  @Transactional
-//  public boolean addAdmin(Administrator admin) throws InvalidFieldException {
-//      if (admin.getAdminName() == null && admin.getAdminPassword() == null) {
-//          boolean result = false;
-//          String name = admin.getAdminName();
-//          String regex = "^[A-Za-z ]+";
-//          if (name.matches(regex)) {
-//              admin = adminRepository.save(admin);
-//              result = true;
-//              LOG.info("Admin is added successfully");
-//              return result;
-//          }
-//          LOG.error("incorrect details");
-//          throw new InvalidFieldException("Not able to add admin record");
-//      }
-//      throw new InvalidFieldException("Fields are empty");
-//  }
-
+	//Admin login
 	public Administrator loginAdmin(int adminId, String password) {
 		Administrator admin = null;
 		if (adminRepository.existsById(adminId)
@@ -81,6 +70,7 @@ public class AdministratorService {
 		return (List<Project>) projectRepository.findAll();
 	}
 
+	//Search project using projectId by admin
 	public Project searchProjectById(int pid) {
 		LOG.info("getEmployeeById " + pid);
 		Optional<Project> optProj = projectRepository.findById(pid);
@@ -91,6 +81,7 @@ public class AdministratorService {
 			return optProj.get();
 	}
 
+	//Add project using projectId by admin
 	public Project addProject(Project project) {
 		LOG.info("addProject");
 		try {
@@ -101,11 +92,13 @@ public class AdministratorService {
 		}
 	}
 
+	//Update project using projectId by admin
 	public Project updateProjectById(Project projectID) {
 		LOG.info("updateProject by id");
 		return projectRepository.save(projectID);
 	}
 
+	//Delete project using projectId by admin
 	public int deleteProject(int pid) { // pid = ProjectID
 		LOG.info("deleteProject");
 		projectRepository.deleteById(pid);
@@ -113,40 +106,50 @@ public class AdministratorService {
 	}
 
 	// staff tasks
-
+	//To view all staff by admin
 	public List<Staff> getAllStaff() {
 		LOG.info("get all Staff");
 		return (List<Staff>) staffRepository.findAll();
 	}
 
+	//To add new staff by admin
 	public Staff addNewStaff(Staff staff) {
 		LOG.info("Add staff");
 		return staffRepository.save(staff);
 	}
 
+	//To update staff by admin
 	public Staff updateStaffById(Staff staffId) {
 		LOG.info("Update a staff detail");
 		return staffRepository.save(staffId);
 	}
 
+	//To delete staff by admin
 	public Staff deleteStaff(Staff staffId) {
 		LOG.info("Delete a staff");
 		staffRepository.delete(staffId);
 		return staffId;
 	}
+	
+	//search staff using staff Id
+	public Staff searchStaffById(int staffId) {
+        LOG.info("searchStaffById " + staffId);
+        Optional<Staff> optStaff = staffRepository.findById(staffId);
+        if (optStaff.isEmpty()) {
+            LOG.error("Staff not found.");
+            throw new StaffNotFoundException("Staff is not present in database");
+        } else
+            return optStaff.get();
+    }
 
 	//Bug tasks
+	//to view all bugs by admin
 	public List<Bug> getAllBugs() {
 		LOG.info("Get all bugs");
 		return (List<Bug>) bugRepository.findAll();
 	}
 
-//	public List<Bug> getSolutionById(Bug bugId) {
-//		LOG.info("get solution by bugId");
-//		return (List<Bug>) bugRepository.findAll();
-//	}
-
-	// viewBugById assignTask track sendMessages
+	// search Bug By Id 
 	public Bug searchBugById(int bugId) {
 		LOG.info("searchBugById " + bugId);
 		Optional<Bug> optBug = bugRepository.findById(bugId);
@@ -158,9 +161,16 @@ public class AdministratorService {
 	}
 
 	// message ops
+	//add message
 	public Message addMessage(Message message) {
 		LOG.info("Add message");
 		return messageRepository.save(message);
 	}
 
+	//REPORT TASK
+	//View all project reports
+    public List<Report> getAllReports() {
+        LOG.info("Get all bugs");
+        return (List<Report>) reportRepository.findAll();
+    }
 }

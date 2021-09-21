@@ -27,38 +27,21 @@ public class Staff {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int staffId;
 
-	@Column(name = "STAFF_NAME", length = 50)
-	private String staffName;
-
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String staffPassword;
 
 	@Column(name = "USER_NAME")
 	private String userName;
 
-	@Column(name = "ROLE")
-	private String role;
-
-	@Column(name = "EMAIL")
-	private String email;
-
-	@Column(name = "CONTACT_NUMBER")
-	private String contactNumber; // long
-
 	public Staff() {
 
 	}
 
-	public Staff(int staffId, String staffName, String staffPassword, String userName, String role, String email,
-			String contactNumber) {
+	public Staff(int staffId, String staffPassword, String userName) {
 		super();
 		this.staffId = staffId;
-		this.staffName = staffName;
 		this.staffPassword = staffPassword;
 		this.userName = userName;
-		this.role = role;
-		this.email = email;
-		this.contactNumber = contactNumber;
 	}
 
 	public int getStaffId() {
@@ -67,14 +50,6 @@ public class Staff {
 
 	public void setStaffId(int staffId) {
 		this.staffId = staffId;
-	}
-
-	public String getStaffName() {
-		return staffName;
-	}
-
-	public void setStaffName(String staffName) {
-		this.staffName = staffName;
 	}
 
 	public String getStaffPassword() {
@@ -93,35 +68,10 @@ public class Staff {
 		this.userName = userName;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getContactNumber() {
-		return contactNumber;
-	}
-
-	public void setContactNumber(String contactNumber) {
-		this.contactNumber = contactNumber;
-	}
-
 	@Override
 	public String toString() {
-		return "Staff [staffId=" + staffId + ", staffName=" + staffName + ", staffPassword=" + staffPassword
-				+ ", userName=" + userName + ", role=" + role + ", email=" + email + ", contactNumber=" + contactNumber
-				+ "]";
+		return "Staff [staffId=" + staffId + ", staffPassword=" + staffPassword + ", userName=" + userName + "]";
 	}
 
+	
 }

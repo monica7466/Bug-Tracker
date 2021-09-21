@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import Demo.Bug.Tracker.Repository.BugRepository;
 import Demo.Bug.Tracker.Repository.MessageRepository;
 import Demo.Bug.Tracker.Repository.UsersRepository;
+import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
 import Demo.Bug.Tracker.model.Users;
@@ -27,6 +28,7 @@ public class UsersService {
 	MessageRepository messageRepository;
 	private static final Logger LOG = LoggerFactory.getLogger(AdministratorService.class);
 
+	//user login
 	public Users loginUser(int userId, String password) {
 		Users user = null;
 		if (usersRepository.existsById(userId)
@@ -38,37 +40,49 @@ public class UsersService {
 	}
 
 	// user tasks on bugs
+	//To add bug by user
 	public Bug addBug(Bug bug) {
 		LOG.info("Add bug");
 		return bugRepository.save(bug);
 	}
 
-//	public Bug getBugById(Integer bugId) {
-//		LOG.info("Get Bug by ID");
-//		Optional<Bug> optBug = bugRepository.findById(bugId);
-//		return optBug.get();
-//	}
+	//To update bug by user
 	public Bug updateBugById(Bug bugId) {
 		LOG.info("update bug by ID");
 		return bugRepository.save(bugId);
 	}
 
+	//To delete bug by user
 	public int deleteBugById(int bugId) {
 		LOG.info("delete bug");
 		bugRepository.deleteById(bugId);
 		return bugId;
 	}
+	
+	// search bugs by bug Id
+	public Bug searchBugByBugId(int bugId) {
+        LOG.info("searchBugById " + bugId);
+        Optional<Bug> optBug = bugRepository.findById(bugId);
+        if (optBug.isEmpty()) {
+            LOG.error("Bug not found.");
+            throw new BugNotFoundException("Bug ID is not valid");
+        } else
+            return optBug.get();
+    }
 
 	// message tasks
+	//To view message by user
 	public List<Message> getMessage() {
 		LOG.info("get messages");
 		return (List<Message>) messageRepository.findAll();
 	}
 
+	//To delete message by user
 	public int deleteMessageById(int messageId) {
 		LOG.info("delete Message");
 		messageRepository.deleteById(messageId);
 		return messageId;
 	}
+
 
 }
