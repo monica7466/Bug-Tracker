@@ -1,6 +1,5 @@
 package Demo.Bug.Tracker.service;
 
-import Demo.Bug.Tracker.exception.InvalidFieldException;
 import Demo.Bug.Tracker.exception.ProjectNotFoundException;
 import Demo.Bug.Tracker.exception.StaffNotFoundException;
 
@@ -21,15 +20,11 @@ import Demo.Bug.Tracker.Repository.StaffRepository;
 import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 
-//import com.capgemini.exception.IncorrectLoginCredentialsException;
-//import com.capgemini.exception.InvalidFieldException;
-//import Demo.Bug.Tracker.*;
 import Demo.Bug.Tracker.model.Administrator;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
 import Demo.Bug.Tracker.model.Project;
 import Demo.Bug.Tracker.model.Report;
-//import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Staff;
 
 @Service
