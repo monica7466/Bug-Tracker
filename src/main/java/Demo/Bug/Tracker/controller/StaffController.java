@@ -69,9 +69,9 @@ public class StaffController {
 	// Staff to staff tasks
 	//Assign project to other staff
 	// http://localhost:8080/Project/AssignProjectToOtherStaff
-	@PutMapping("/Project/AssignProjectToOtherStaff/{projectID}") // InvalidId
-	public Project AssignProjectToOtherStaff(@RequestBody Project projectID) throws NoSuchRecordException {
-		return staffService.AssignProjectToOtherStaffUsingID(projectID);
+	@PutMapping("/Project/AssignProjectToOtherStaff/{staffID}") // InvalidId
+	public Project AssignProjectToOtherStaff(@RequestBody Project staffId) throws NoSuchRecordException {
+		return staffService.AssignProjectToOtherStaffUsingID(staffId);
 	}
 
 	//view all staff members
@@ -89,13 +89,13 @@ public class StaffController {
 		return new ResponseEntity<Project>(project, HttpStatus.OK);
 	}
 
-	// Report/ViewProjectReport(ByProjectID)
-//    @GetMapping("/Report/searchReportByProjectId{projectId}")
-//    public ResponseEntity<Report> searchBug(@PathVariable Integer reportId) throws ReportNotFoundException{
-//        LOG.info("Search bugs by id");
-//        Report report = staffService.searchReportByProjectId(reportId);
-//        return new ResponseEntity<Report>(report, HttpStatus.OK);
-//    }
+	 //Report/ViewProjectReport(ByProjectID)
+    @GetMapping("/Report/searchReportByProjectID{projectID}")
+    public ResponseEntity<Report> searchReport(@PathVariable int projectID) throws ReportNotFoundException{
+        LOG.info("Search report by id");
+        Report report = staffService.searchReportByProjectID(projectID);
+        return new ResponseEntity<Report>(report, HttpStatus.OK);
+    }
 	
 	//view all reports by staff
 	@GetMapping("/Report/getAllReport")

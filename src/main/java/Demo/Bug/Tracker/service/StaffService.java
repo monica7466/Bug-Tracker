@@ -91,20 +91,20 @@ public class StaffService {
     }
 
 	//assign projects to other staff using staff Id
-    public Project AssignProjectToOtherStaffUsingID(Project projectID) {
+    public Project AssignProjectToOtherStaffUsingID(Project staffId) {
         LOG.info("updateProject by id");
-        return projectRepository.save(projectID);
+        return projectRepository.save(staffId);
     }
 
-//	public Report searchReportByProjectId(int reportId) {
-//		LOG.info("searchReportByProjectId " + reportId);
-//		Optional<Report> optreport = reportRepository.findById(reportId);
-//		if (optreport.isEmpty()) {
-//			LOG.error("Bug not found.");
-//			throw new ProjectNotFoundException("");
-//		} else
-//			return optreport.get();
-//	}
+	public Report searchReportByProjectID(int projectID) {
+		LOG.info("searchReportByProjectID " + projectID);
+		Optional<Report> optreport = reportRepository.findById(projectID);
+		if (optreport.isEmpty()) {
+			LOG.error("Bug not found.");
+			throw new ProjectNotFoundException("");
+		} else
+			return optreport.get();
+	}
     
     //view all report
     public List<Report> getAllReport() {
