@@ -18,7 +18,7 @@ public class Users {
 	private int userId;
 
 	@Column(name = "USER_NAME", length = 50)
-	@Pattern(regexp = "^[a-zA-Z]+$", message = "Please Enter Valid Name")
+	@Pattern(regexp = "^[A-Z]{1}[a-z]+$", message = "Please Enter Valid Name")
 	private String userName;
 
 	@Column(name = "USER_PASSWORD")

@@ -29,11 +29,11 @@ public class Staff {
 	private int staffId;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
-	@Pattern(regexp = "^[a-zA-Z0-9]+$")
+	@Pattern(regexp = "^[a-z]+[A-Z]+[0-9]+$")
 	private String staffPassword;
 
 	@Column(name = "USER_NAME")
-	@Pattern(regexp = "^[a-zA-Z]+$", message = "Please Enter Valid Name")
+	@Pattern(regexp = "^[A-Z]{1}[a-z]+$", message = "Please Enter Valid Name")
 	private String userName;
 
 	public Staff() {
