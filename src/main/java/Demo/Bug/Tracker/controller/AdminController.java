@@ -1,26 +1,23 @@
 package Demo.Bug.Tracker.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import Demo.Bug.Tracker.exception.InvalidFieldException;
@@ -64,8 +61,16 @@ public class AdminController {
 		return "index";
 	}
 
+	// to add project by admin
+	// http://localhost:8080/Project/addProject
+	@PostMapping("/Project/addProject")
+	public Project addProject(@RequestBody Project project) throws InvalidFieldException {
+		LOG.info("addProject");
+		return adminService.addProject(project);
+	}
+
 	// view all project to admin
-	// http://localhost:8080/Project/getAllProject
+	// http://localhost:8082/Project/getAllProject
 	@GetMapping("/Project/getAllProject")
 	public List<Project> getAllProject() throws NoSuchRecordException {
 		LOG.info("getAllProject");
@@ -75,17 +80,9 @@ public class AdminController {
 	// to search project by admin
 	@GetMapping("/searchProject/{adminId}")
 	public ResponseEntity<Project> searchProject(@PathVariable int adminId) throws ProjectNotFoundException {
-		LOG.info("getEmp");
+		LOG.info("get Project");
 		Project project = adminService.searchProjectById(adminId);
 		return new ResponseEntity<Project>(project, HttpStatus.OK);
-	}
-
-	// to add project by admin
-	// http://localhost:8080/Project/addProject
-	@PostMapping("/Project/addProject")
-	public Project addProject(@RequestBody Project project) throws InvalidFieldException {
-		LOG.info("addProject");
-		return adminService.addProject(project);
 	}
 
 	// to updating the project using projectId by admin
@@ -104,28 +101,29 @@ public class AdminController {
 	}
 
 	// STAFF tasks
+
+	// add new staff member details
+	@PostMapping("/staff/addNewStaff")
+	public Staff addNewStaff(@RequestBody Staff staff) throws IllegalArgumentException {
+		return adminService.addNewStaff(staff);
+	}
+
 	// view all staff member details
 	@GetMapping("/Staff/getAllStaff")
-	public List<Staff> getAllStaff() throws NoSuchRecordException {
+	public List<Staff> getAllStaff() throws IllegalArgumentException {
 		System.out.println("getStaff");
 		return adminService.getAllStaff();
 	}
 
-	// add new staff member details
-	@PostMapping("/staff/addNewStaff")
-	public Staff addNewStaff(@RequestBody Staff staff) throws InvalidFieldException {
-		return adminService.addNewStaff(staff);
-	}
-
 	// update new staff member details
 	@PutMapping("/staff/updateStaff/{staffId}") //// InvalidStaffId
-	public Staff updateStaffById(@RequestBody Staff staffId) throws InvalidFieldException {
+	public Staff updateStaffById(@RequestBody Staff staffId) throws IllegalArgumentException {
 		return adminService.updateStaffById(staffId);
 	}
 
 	// delete new staff member details
 	@DeleteMapping("/staff/deleteStaffById/{staffId}") /// InvalidStaffId
-	public Staff deleteStaffById(@PathVariable Staff staffId) throws NoSuchRecordException {
+	public Staff deleteStaffById(@PathVariable Staff staffId) throws IllegalArgumentException {
 		return adminService.deleteStaff(staffId);
 	}
 
@@ -156,7 +154,7 @@ public class AdminController {
 	// message operations
 	// send message to users
 	@PostMapping("/message/addMessage")
-	public Message addMessage(@RequestBody Message message) throws InvalidFieldException {
+	public Message addMessage(@RequestBody Message message) throws IllegalArgumentException {
 		return adminService.addMessage(message);
 	}
 

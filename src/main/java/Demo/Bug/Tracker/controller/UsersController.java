@@ -20,7 +20,7 @@ import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 import Demo.Bug.Tracker.exception.InvalidFieldException;
 import Demo.Bug.Tracker.exception.MessageNotFoundException;
-import Demo.Bug.Tracker.exception.NoSuchRecordException;
+import Demo.Bug.Tracker.exception.ProjectNotFoundException;
 import Demo.Bug.Tracker.exception.ReportNotFoundException;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
@@ -36,65 +36,63 @@ public class UsersController {
 	UsersService usersService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AdministratorService.class);
-	
-	//User Login
+
+	// User Login
 	@PostMapping(path = "/UsersLogin")
-    public ResponseEntity<Users> usersLogin(@RequestBody Users user)
-            throws IncorrectLoginCredentialsException{
-        Users result = usersService.loginUser(user.getUserId(), user.getUserPassword());
-        ResponseEntity<Users> response = new ResponseEntity<>(result, HttpStatus.OK);
-        return response;
-    }
-	
-	//user tasks on bugs
-	//add bug
+	public ResponseEntity<Users> usersLogin(@RequestBody Users user) throws IncorrectLoginCredentialsException {
+		Users result = usersService.loginUser(user.getUserId(), user.getUserPassword());
+		ResponseEntity<Users> response = new ResponseEntity<>(result, HttpStatus.OK);
+		return response;
+	}
+
+	// user tasks on bugs
+	// add bug
 	@PostMapping("/bug/addBug")
-	public Bug addBug(@RequestBody Bug bug) throws InvalidFieldException{
+	public Bug addBug(@RequestBody Bug bug) throws IllegalArgumentException {
 		return usersService.addBug(bug);
 	}
-	
-	//search bugs by Id
+
+	// search bugs by Id
 	@GetMapping("/Bug/searchBugs{bugId}")
-    public ResponseEntity<Bug> searchBugs(@PathVariable int bugId) throws BugNotFoundException{
-        LOG.info("Search bugs by id");
-        Bug bug = usersService.searchBugByBugId(bugId);
-        return new ResponseEntity<Bug>(bug, HttpStatus.OK);
-    }
-	
-	//To update bug using bugId by user
+	public ResponseEntity<Bug> searchBugs(@PathVariable int bugId) throws BugNotFoundException {
+		LOG.info("Search bugs by id");
+		Bug bug = usersService.searchBugByBugId(bugId);
+		return new ResponseEntity<Bug>(bug, HttpStatus.OK);
+	}
+
+	// To update bug using bugId by user
 	@PutMapping("/bug/updateBug/{bugId}")
-	public Bug updateBugById(@RequestBody Bug bugId) throws InvalidFieldException{
+	public Bug updateBugById(@RequestBody Bug bugId) throws IllegalArgumentException {
 		return usersService.updateBugById(bugId);
 	}
-	
-	//To delete bug using bugId by user
+
+	// To delete bug using bugId by user
 	@DeleteMapping("/bug/deleteBugById/{bugId}")
-	public int deleteBugById(@PathVariable int bugId) throws BugNotFoundException{
-		LOG.info("Delte bug");
+	public int deleteBugById(@PathVariable int bugId) throws IllegalArgumentException {
+		LOG.info("Delete bug");
 		return usersService.deleteBugById(bugId);
 	}
-	
-	//message tasks
-	//view message
+
+	// message tasks
+	// view message
 	@GetMapping("/message/getMessage")
-	public List<Message> getMessage()throws  MessageNotFoundException{
+	public List<Message> getMessage() throws MessageNotFoundException {
 		return usersService.getMessage();
 	}
-	
-	//To delete message using messageId by user
+
+	// To delete message using messageId by user
 	@DeleteMapping("/bug/deleteMessageById/{messageId}")
-	public int deleteMessageById(@PathVariable int messageId) throws MessageNotFoundException {
+	public int deleteMessageById(@PathVariable int messageId) throws IllegalArgumentException {
 		LOG.info("Delete message");
 		return usersService.deleteMessageById(messageId);
 	}
+
 	// REPORT TASK
-    // view all reports
-	// REPORT TASK
-    //Report/ViewProjectReport(ByProjectID)
-   @GetMapping("/Report/searchReportByProjectIDForUser{projectID}")
-   public ResponseEntity<Report> searchReport(@PathVariable int projectID) throws ReportNotFoundException{
-       LOG.info("Search report by id");
-       Report report = usersService.searchReportByProjectIDForUser(projectID);
-       return new ResponseEntity<Report>(report, HttpStatus.OK);
-   }
+	// view all reports
+	@GetMapping("/Report/searchReportByProjectIDForUser{projectID}")
+	public ResponseEntity<Report> searchReport(@PathVariable int projectID) throws ProjectNotFoundException {
+		LOG.info("Search report by id");
+		Report report = usersService.searchReportByProjectIDForUser(projectID);
+		return new ResponseEntity<Report>(report, HttpStatus.OK);
+	}
 }

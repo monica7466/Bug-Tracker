@@ -111,12 +111,6 @@ public class AdministratorService {
 
 	// Staff Functionalities
 
-	// To view all staff by admin
-	public List<Staff> getAllStaff() {
-		LOG.info("get all Staff");
-		return (List<Staff>) staffRepository.findAll();
-	}
-
 	// To add new staff by admin
 	public Staff addNewStaff(Staff staff) {
 		try {
@@ -125,6 +119,12 @@ public class AdministratorService {
 			LOG.error("Not able to add Staff" + iae.getMessage());
 			return null;
 		}
+	}
+
+	// To view all staff by admin
+	public List<Staff> getAllStaff() {
+		LOG.info("get all Staff");
+		return (List<Staff>) staffRepository.findAll();
 	}
 
 	// To update staff by admin

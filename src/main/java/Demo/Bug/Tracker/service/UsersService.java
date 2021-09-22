@@ -40,7 +40,7 @@ public class UsersService {
 		if (usersRepository.existsById(userId)
 				&& usersRepository.findById(userId).get().getUserPassword().equals(password)) {
 			user = usersRepository.findById(userId).get();
-			LOG.info("Admin login is  successfull");
+			LOG.info("User login is  successfull");
 		}
 		return user;
 	}
@@ -55,6 +55,17 @@ public class UsersService {
 			LOG.error("Not able to add bug" + iae.getMessage());
 			return null;
 		}
+	}
+
+	// search bugs by bug Id
+	public Bug searchBugByBugId(int bugId) {
+		LOG.info("searchBugById " + bugId);
+		Optional<Bug> optBug = bugRepository.findById(bugId);
+		if (optBug.isEmpty()) {
+			LOG.error("Bug not found.");
+			throw new BugNotFoundException("Bug ID is not valid");
+		} else
+			return optBug.get();
 	}
 
 	// To update bug by user
@@ -80,17 +91,6 @@ public class UsersService {
 		}
 	}
 
-	// search bugs by bug Id
-	public Bug searchBugByBugId(int bugId) {
-		LOG.info("searchBugById " + bugId);
-		Optional<Bug> optBug = bugRepository.findById(bugId);
-		if (optBug.isEmpty()) {
-			LOG.error("Bug not found.");
-			throw new BugNotFoundException("Bug ID is not valid");
-		} else
-			return optBug.get();
-	}
-
 	// Message Functionalities
 	// To view message by user
 	public List<Message> getMessage() {
@@ -113,16 +113,14 @@ public class UsersService {
 
 	// Report Functionalities
 
-	 
-
-    public Report searchReportByProjectIDForUser(int projectID) {
-        LOG.info("searchReportByProjectID " + projectID);
-        Optional<Report> optreport = reportRepository.findById(projectID);
-        if (optreport.isEmpty()) {
-            LOG.error("Bug not found.");
-            throw new ProjectNotFoundException("Not able to search report by project ID");
-        } else
-            return optreport.get();
-    }
+	public Report searchReportByProjectIDForUser(int projectID) {
+		LOG.info("searchReportByProjectID " + projectID);
+		Optional<Report> optreport = reportRepository.findById(projectID);
+		if (optreport.isEmpty()) {
+			LOG.error("Bug not found.");
+			throw new ProjectNotFoundException("Not able to search report by project ID");
+		} else
+			return optreport.get();
+	}
 
 }
