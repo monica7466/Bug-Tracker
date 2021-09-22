@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 
 import Demo.Bug.Tracker.Repository.BugRepository;
 import Demo.Bug.Tracker.Repository.MessageRepository;
+import Demo.Bug.Tracker.Repository.ReportRepository;
 import Demo.Bug.Tracker.Repository.UsersRepository;
 import Demo.Bug.Tracker.exception.BugNotFoundException;
+import Demo.Bug.Tracker.exception.ProjectNotFoundException;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
+import Demo.Bug.Tracker.model.Report;
 import Demo.Bug.Tracker.model.Users;
 
 @Service
@@ -26,9 +29,12 @@ public class UsersService {
 
 	@Autowired
 	MessageRepository messageRepository;
+
+	@Autowired
+	ReportRepository reportRepository;
 	private static final Logger LOG = LoggerFactory.getLogger(AdministratorService.class);
 
-	//user login
+	// user login
 	public Users loginUser(int userId, String password) {
 		Users user = null;
 		if (usersRepository.existsById(userId)
@@ -40,69 +46,83 @@ public class UsersService {
 	}
 
 	// User Funtionalities on bugs
-	//To add bug by user
+	// To add bug by user
 	public Bug addBug(Bug bug) {
 		LOG.info("Add bug");
 		try {
-		return bugRepository.save(bug);
-		}catch(IllegalArgumentException iae) {
-			LOG.error("Not able to add bug"+iae.getMessage());
+			return bugRepository.save(bug);
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to add bug" + iae.getMessage());
 			return null;
 		}
 	}
 
-	//To update bug by user
+	// To update bug by user
 	public Bug updateBugById(Bug bugId) {
 		LOG.info("update bug by ID");
 		try {
-		return bugRepository.save(bugId);
-		}catch(IllegalArgumentException iae) {
-			LOG.error("Not able to update bug"+iae.getMessage());
+			return bugRepository.save(bugId);
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to update bug" + iae.getMessage());
 			return null;
 		}
 	}
 
-	//To delete bug by user
+	// To delete bug by user
 	public int deleteBugById(int bugId) {
 		LOG.info("Delete bug");
 		try {
-		bugRepository.deleteById(bugId);
-		return bugId;
-		}catch(IllegalArgumentException iae) {
-			LOG.error("Not able to delete bug"+iae.getMessage());
+			bugRepository.deleteById(bugId);
+			return bugId;
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to delete bug" + iae.getMessage());
 			return 0;
 		}
 	}
-	
+
 	// search bugs by bug Id
 	public Bug searchBugByBugId(int bugId) {
-        LOG.info("searchBugById " + bugId);
-        Optional<Bug> optBug = bugRepository.findById(bugId);
-        if (optBug.isEmpty()) {
-            LOG.error("Bug not found.");
-            throw new BugNotFoundException("Bug ID is not valid");
-        } else
-            return optBug.get();
-    }
+		LOG.info("searchBugById " + bugId);
+		Optional<Bug> optBug = bugRepository.findById(bugId);
+		if (optBug.isEmpty()) {
+			LOG.error("Bug not found.");
+			throw new BugNotFoundException("Bug ID is not valid");
+		} else
+			return optBug.get();
+	}
 
 	// Message Functionalities
-	//To view message by user
+	// To view message by user
 	public List<Message> getMessage() {
 		LOG.info("get messages");
 		return (List<Message>) messageRepository.findAll();
 	}
 
-	//To delete message by user
+	// To delete message by user
 	public int deleteMessageById(int messageId) {
 		LOG.info("delete Message");
 		try {
-		messageRepository.deleteById(messageId);
-		return messageId;
-		}catch(IllegalArgumentException iae) {
-			LOG.error("Not able to delete "+iae.getMessage());
+			messageRepository.deleteById(messageId);
+			return messageId;
+		} catch (IllegalArgumentException iae) {
+			LOG.error("Not able to delete " + iae.getMessage());
 			return 0;
 		}
 	}
+	// Report Functionalities
 
+	// Report Functionalities
+
+	 
+
+    public Report searchReportByProjectIDForUser(int projectID) {
+        LOG.info("searchReportByProjectID " + projectID);
+        Optional<Report> optreport = reportRepository.findById(projectID);
+        if (optreport.isEmpty()) {
+            LOG.error("Bug not found.");
+            throw new ProjectNotFoundException("Not able to search report by project ID");
+        } else
+            return optreport.get();
+    }
 
 }

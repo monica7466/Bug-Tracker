@@ -21,8 +21,10 @@ import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 import Demo.Bug.Tracker.exception.InvalidFieldException;
 import Demo.Bug.Tracker.exception.MessageNotFoundException;
 import Demo.Bug.Tracker.exception.NoSuchRecordException;
+import Demo.Bug.Tracker.exception.ReportNotFoundException;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
+import Demo.Bug.Tracker.model.Report;
 import Demo.Bug.Tracker.model.Users;
 import Demo.Bug.Tracker.service.AdministratorService;
 import Demo.Bug.Tracker.service.UsersService;
@@ -85,5 +87,14 @@ public class UsersController {
 		LOG.info("Delete message");
 		return usersService.deleteMessageById(messageId);
 	}
-
+	// REPORT TASK
+    // view all reports
+	// REPORT TASK
+    //Report/ViewProjectReport(ByProjectID)
+   @GetMapping("/Report/searchReportByProjectIDForUser{projectID}")
+   public ResponseEntity<Report> searchReport(@PathVariable int projectID) throws ReportNotFoundException{
+       LOG.info("Search report by id");
+       Report report = usersService.searchReportByProjectIDForUser(projectID);
+       return new ResponseEntity<Report>(report, HttpStatus.OK);
+   }
 }
