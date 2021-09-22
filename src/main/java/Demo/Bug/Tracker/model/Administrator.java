@@ -1,36 +1,34 @@
 package Demo.Bug.Tracker.model;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import javax.validation.constraints.Pattern;
 
-//@Component("Administrator")
-//@Scope("prototype")
 @Entity
 @Table(name = "ADMINISTRATOR")
 public class Administrator {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "ADMIN_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int adminId;
 
-	@Column(name = "ADMIN_NAME", length = 50)
+	@Column(name = "ADMIN_NAME", length = 20)
+	@Pattern(regexp = "^[a-zA-Z]+$", message = "Please Enter Valid Name")
 	private String adminName;
 
 	@Column(name = "ADMIN_PASSWORD")
+	@Pattern(regexp = "^[a-zA-Z0-9]+$")
 	private String adminPassword;
 
 	public Administrator() {

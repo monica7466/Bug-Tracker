@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -28,9 +29,11 @@ public class Staff {
 	private int staffId;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
+	@Pattern(regexp = "^[a-zA-Z0-9]+$")
 	private String staffPassword;
 
 	@Column(name = "USER_NAME")
+	@Pattern(regexp = "^[a-zA-Z]+$", message = "Please Enter Valid Name")
 	private String userName;
 
 	public Staff() {

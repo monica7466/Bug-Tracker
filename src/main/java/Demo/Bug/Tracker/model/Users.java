@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "USERS")
@@ -17,9 +18,11 @@ public class Users {
 	private int userId;
 
 	@Column(name = "USER_NAME", length = 50)
+	@Pattern(regexp = "^[a-zA-Z]+$", message = "Please Enter Valid Name")
 	private String userName;
 
 	@Column(name = "USER_PASSWORD")
+	@Pattern(regexp = "^[a-zA-Z0-9]+$")
 	private String userPassword;
 
 	public Users() {
