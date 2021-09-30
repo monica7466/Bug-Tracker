@@ -17,7 +17,7 @@ public class Users {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
 
-	@Column(name = "USER_NAME", length = 50)
+	@Column(name = "USER_NAME", length = 20)
 	@Pattern(regexp = "^[A-Z]{1}[a-z]+$", message = "Please Enter Valid Name")
 	private String userName;
 
