@@ -76,7 +76,12 @@ public class AdminController {
 		LOG.info("getAllProject");
 		return adminService.getAllProject();
 	}
-
+	/**
+	 * 
+	 * @param adminId
+	 * @return
+	 * @throws ProjectNotFoundException
+	 */
 	// to search project by admin
 	@GetMapping("/searchProject/{adminId}")
 	public ResponseEntity<Project> searchProject(@PathVariable int adminId) throws ProjectNotFoundException {

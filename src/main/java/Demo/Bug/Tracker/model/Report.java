@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -17,11 +18,11 @@ public class Report {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int reportId;
 
-	@JoinColumn(name = "project_id", nullable = false)
-	private int projectId;
-
-	@JoinColumn(name = "project_name", nullable = false)
-	private String projectName;
+//	@JoinColumn(name = "project_id", nullable = false)
+//	private int projectId;
+//
+//	@JoinColumn(name = "project_name", nullable = false)
+//	private String projectName;
 
 	@Column(name = "SOLUTION_DESCRIPTION")
 	private String solutionDescription;
@@ -29,18 +30,29 @@ public class Report {
 	@Column(name = "STATUS")
 	private String status;
 
+	@OneToOne
+	@JoinColumn(name="project_id")
+	Project project;
 
 	public Report() {
 
 	}
 
-	public Report(int reportId, int projectId, String projectName, String solutionDescription, String status) {
+//	public Report(int reportId, int projectId, String projectName, String solutionDescription, String status) {
+//		super();
+//		this.reportId = reportId;
+//		this.projectId = projectId;
+//		this.projectName = projectName;
+//		this.solutionDescription = solutionDescription;
+//		this.status = status;
+//	}
+
+	public Report(int reportId, String solutionDescription, String status, Project project) {
 		super();
 		this.reportId = reportId;
-		this.projectId = projectId;
-		this.projectName = projectName;
 		this.solutionDescription = solutionDescription;
 		this.status = status;
+		this.project = project;
 	}
 
 	public int getReportId() {
@@ -51,21 +63,21 @@ public class Report {
 		this.reportId = reportId;
 	}
 
-	public int getProjectId() {
-		return projectId;
-	}
-
-	public void setProjectId(int projectId) {
-		this.projectId = projectId;
-	}
-
-	public String getProjectName() {
-		return projectName;
-	}
-
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
+//	public int getProjectId() {
+//		return projectId;
+//	}
+//
+//	public void setProjectId(int projectId) {
+//		this.projectId = projectId;
+//	}
+//
+//	public String getProjectName() {
+//		return projectName;
+//	}
+//
+//	public void setProjectName(String projectName) {
+//		this.projectName = projectName;
+//	}
 
 	public String getSolutionDescription() {
 		return solutionDescription;
@@ -83,12 +95,26 @@ public class Report {
 		this.status = status;
 	}
 
-	@Override
-	public String toString() {
-		return "Report [reportId=" + reportId + ", projectId=" + projectId + ", projectName=" + projectName
-				+ ", solutionDescription=" + solutionDescription + ", status=" + status + "]";
+	public Project getProject() {
+		return project;
 	}
 
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
+	@Override
+	public String toString() {
+		return "Report [reportId=" + reportId + ", solutionDescription=" + solutionDescription + ", status=" + status
+				+ ", project=" + project + "]";
+	}
+
+//	@Override
+//	public String toString() {
+//		return "Report [reportId=" + reportId + ", projectId=" + projectId + ", projectName=" + projectName
+//				+ ", solutionDescription=" + solutionDescription + ", status=" + status + "]";
+//	}
+	
 
 
 }	

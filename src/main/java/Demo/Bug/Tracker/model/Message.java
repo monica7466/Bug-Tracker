@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,16 +19,37 @@ public class Message {
 
 	@Column(name = "MESSAGES", length = 100)
 	private String messages;
+	
+	@ManyToOne
+	@JoinColumn(name="USER_ID")
+	Users users;
+	
 
-	public Message(int messageId, String messages) {
-		super();
-		this.messageId = messageId;
-		this.messages = messages;
-
-	}
+//	public Message(int messageId, String messages) {
+//		super();
+//		this.messageId = messageId;
+//		this.messages = messages;
+//
+//	}
+	
 
 	public Message() {
 		super();
+	}
+
+	public Message(int messageId, String messages, Users users) {
+	super();
+	this.messageId = messageId;
+	this.messages = messages;
+	this.users = users;
+}
+
+	public Users getUsers() {
+		return users;
+	}
+
+	public void setUsers(Users users) {
+		this.users = users;
 	}
 
 	public int getMessageId() {
@@ -48,7 +70,13 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return "Message [messageId=" + messageId + ", messages=" + messages + "]";
+		return "Message [messageId=" + messageId + ", messages=" + messages + ", users=" + users + "]";
 	}
+
+//	@Override
+//	public String toString() {
+//		return "Message [messageId=" + messageId + ", messages=" + messages + "]";
+//	}
+	
 
 }

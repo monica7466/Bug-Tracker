@@ -30,22 +30,33 @@ public class Bug implements Serializable {
 	@Column(name = "DESCRIPTION")
 	private String description;
 	
-	@JoinColumn(name = "USER_ID", nullable = false)
-    private int userId;
+	@ManyToOne
+	@JoinColumn(name="USER_ID")
+	Users users;
 
 	public Bug() {
 	}
 
-	public Bug(int bugId, String bugName, String raisedDate, String description) {
+//	public Bug(int bugId, String bugName, String raisedDate, String description) {
+//		super();
+//		this.bugId = bugId;
+//		this.bugName = bugName;
+//		this.raisedDate = raisedDate;
+//		this.description = description;
+//	}
+	
+
+	public int getBugId() {
+		return bugId;
+	}
+
+	public Bug(int bugId, String bugName, String raisedDate, String description, Users users) {
 		super();
 		this.bugId = bugId;
 		this.bugName = bugName;
 		this.raisedDate = raisedDate;
 		this.description = description;
-	}
-
-	public int getBugId() {
-		return bugId;
+		this.users = users;
 	}
 
 	public void setBugId(int bugId) {
@@ -76,10 +87,26 @@ public class Bug implements Serializable {
 		this.description = description;
 	}
 
+	public Users getUsers() {
+		return users;
+	}
+
+	public void setUsers(Users users) {
+		this.users = users;
+	}
+
 	@Override
 	public String toString() {
 		return "Bug [bugId=" + bugId + ", bugName=" + bugName + ", raisedDate=" + raisedDate + ", description="
-				+ description + "]";
+				+ description + ", users=" + users + "]";
 	}
+
+//	@Override
+//	public String toString() {
+//		return "Bug [bugId=" + bugId + ", bugName=" + bugName + ", raisedDate=" + raisedDate + ", description="
+//				+ description + "]";
+//	}
+	
+	
 
 }

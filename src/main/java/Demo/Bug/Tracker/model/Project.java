@@ -44,11 +44,18 @@ public class Project {
 
 	@JoinColumn(name = "STAFF_ID", nullable = false)
 	private int staffId;
+//	@OneToMany
+//	@JoinColumn(name="STAFF_ID")
+//	Staff staff;
 
 	@Column(name = "project_priority")
 //    @Size(min = 1, max = 40, message = "Name must have between {min} and {max} characters.")
 //    @NotNull(message = "A name is required for employee.")
 	private int projectPriority;
+		
+//	@OneToOne
+//	@JoinColumn(name="REPORT_ID")
+//	Report report;
 
 	public Project() {
 	}

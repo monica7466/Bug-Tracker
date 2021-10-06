@@ -19,7 +19,7 @@ import Demo.Bug.Tracker.Repository.ReportRepository;
 import Demo.Bug.Tracker.Repository.StaffRepository;
 import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
-
+import Demo.Bug.Tracker.exception.InvalidFieldException;
 import Demo.Bug.Tracker.model.Administrator;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
@@ -80,11 +80,14 @@ public class AdministratorService {
 
 	// Add project using projectId by admin
 	public Project addProject(Project project) {
-		try {
+		
+		if(project.getBugId()!=0) {
+			LOG.info("Project is added");
 			return projectRepository.save(project);
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to add Project" + iae.getMessage());
-			return null;
+		}
+		else {
+			LOG.error("Project not added");
+			throw new InvalidFieldException("Not able to add project");
 		}
 	}
 

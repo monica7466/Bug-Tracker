@@ -23,12 +23,12 @@ public class Administrator {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int adminId;
 
-	@Column(name = "ADMIN_NAME", length = 20)
-	@Pattern(regexp = "^[A-Z]{1}[a-z]+$", message = "Please Enter Valid Name")
+	@Column(name = "ADMIN_NAME", length = 20, unique = true)
+	//@Pattern(regexp = "^[A-Z]{1}[a-z]+$", message = "Please Enter Valid Name")
 	private String adminName;
 
-	@Column(name = "ADMIN_PASSWORD")
-	@Pattern(regexp = "^[a-zA-Z0-9]+$")
+	@Column(name = "ADMIN_PASSWORD", length=20, nullable=false, unique = true)
+	//@Pattern(regexp = "^[a-zA-Z0-9]+" +"[@#$%^&+=]*" +"(?=\\S+$).{8,20}$")
 	private String adminPassword;
 
 	public Administrator() {
@@ -73,3 +73,4 @@ public class Administrator {
 	}
 
 }
+//components admin staff users common
