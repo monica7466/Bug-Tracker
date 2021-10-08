@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import Demo.Bug.Tracker.exception.InvalidFieldException;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToDelete;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToUpdate;
 import Demo.Bug.Tracker.exception.NoSuchRecordException;
 import Demo.Bug.Tracker.exception.ProjectNotFoundException;
 import Demo.Bug.Tracker.exception.ReportNotFoundException;
@@ -93,14 +95,14 @@ public class AdminController {
 	// to updating the project using projectId by admin
 	// http://localhost:8080/Project/updateProject
 	@PutMapping("/Project/updateProject/{projectID}") // InvalidId
-	public Project updateProjectById(@RequestBody Project projectID) throws InvalidFieldException {
+	public Project updateProjectById(@RequestBody Project projectID) throws NoSuchProjectStaffBugReportExceptionToUpdate {
 		return adminService.updateProjectById(projectID);
 	}
 
 	// to deleting the project using projectId by admin
 	// http://localhost:8080/Project/deleteProject{projectID}
 	@DeleteMapping("/Project/deleteProject/{projectID}") // InvalidId
-	public int deleteProject(@PathVariable int projectID) throws NoSuchRecordException {
+	public int deleteProject(@PathVariable int projectID) throws NoSuchProjectStaffBugReportExceptionToDelete {
 		LOG.info("deleteProject");
 		return adminService.deleteProject(projectID);
 	}
@@ -109,26 +111,26 @@ public class AdminController {
 
 	// add new staff member details
 	@PostMapping("/staff/addNewStaff")
-	public Staff addNewStaff(@RequestBody Staff staff) throws IllegalArgumentException {
+	public Staff addNewStaff(@RequestBody Staff staff) throws InvalidFieldException {
 		return adminService.addNewStaff(staff);
 	}
 
 	// view all staff member details
 	@GetMapping("/Staff/getAllStaff")
-	public List<Staff> getAllStaff() throws IllegalArgumentException {
+	public List<Staff> getAllStaff() throws NoSuchRecordException {
 		System.out.println("getStaff");
 		return adminService.getAllStaff();
 	}
 
 	// update new staff member details
 	@PutMapping("/staff/updateStaff/{staffId}") //// InvalidStaffId
-	public Staff updateStaffById(@RequestBody Staff staffId) throws IllegalArgumentException {
+	public Staff updateStaffById(@RequestBody Staff staffId) throws NoSuchProjectStaffBugReportExceptionToUpdate {
 		return adminService.updateStaffById(staffId);
 	}
 
 	// delete new staff member details
 	@DeleteMapping("/staff/deleteStaffById/{staffId}") /// InvalidStaffId
-	public Staff deleteStaffById(@PathVariable Staff staffId) throws IllegalArgumentException {
+	public Staff deleteStaffById(@PathVariable Staff staffId) throws NoSuchProjectStaffBugReportExceptionToDelete {
 		return adminService.deleteStaff(staffId);
 	}
 
@@ -143,7 +145,7 @@ public class AdminController {
 	// BUGS tasks
 	// To view all bugs to admin
 	@GetMapping("/bug/getAllbugs")
-	public List<Bug> getAllBugs() throws BugNotFoundException {
+	public List<Bug> getAllBugs() throws NoSuchRecordException {
 		System.out.println("get all bugs");
 		return adminService.getAllBugs();
 	}
@@ -159,14 +161,14 @@ public class AdminController {
 	// message operations
 	// send message to users
 	@PostMapping("/message/addMessage")
-	public Message addMessage(@RequestBody Message message) throws IllegalArgumentException {
+	public Message addMessage(@RequestBody Message message) throws InvalidFieldException {
 		return adminService.addMessage(message);
 	}
 
 	// REPORT TASK
 	// view all reports
 	@GetMapping("/Report/getAllReports")
-	public List<Report> getAllReports() throws ReportNotFoundException {
+	public List<Report> getAllReports() throws NoSuchRecordException {
 		System.out.println("get all bugs");
 		return adminService.getAllReports();
 	}

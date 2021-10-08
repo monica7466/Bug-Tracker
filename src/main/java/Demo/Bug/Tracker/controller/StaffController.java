@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 import Demo.Bug.Tracker.exception.InvalidFieldException;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToDelete;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToUpdate;
 import Demo.Bug.Tracker.exception.NoSuchRecordException;
 import Demo.Bug.Tracker.exception.ProjectNotFoundException;
 import Demo.Bug.Tracker.exception.ReportNotFoundException;
@@ -56,20 +58,20 @@ public class StaffController {
 
 	// Report tasks for staff
 	@PostMapping("/report/AddProjectReport")
-	public Report addProjectReport(@RequestBody Report report) throws IllegalArgumentException {
+	public Report addProjectReport(@RequestBody Report report) throws InvalidFieldException {
 		LOG.info("addProjectReport");
 		return staffService.addProjectReport(report);
 	}
 
 	// To update report by staff for admin and user
 	@PutMapping("/report/updateReport/{projectID}")
-	public Report updateReport(@RequestBody Report projectID) throws IllegalArgumentException {
+	public Report updateReport(@RequestBody Report projectID) throws NoSuchProjectStaffBugReportExceptionToUpdate {
 		return staffService.updateReport(projectID);
 	}
 
 	// To delete report by staff
 	@DeleteMapping("/Report/deleteReport/{reportId}") // InvalidId
-	public int deleteReport(@PathVariable int reportId) throws IllegalArgumentException {
+	public int deleteReport(@PathVariable int reportId) throws NoSuchProjectStaffBugReportExceptionToDelete {
 		LOG.info("deleteProject");
 		return staffService.deleteReport(reportId);
 	}
@@ -78,7 +80,7 @@ public class StaffController {
 
 	// view all staff members
 	@GetMapping("/Staff/viewAllStaff")
-	public List<Staff> viewAllStaff() throws StaffNotFoundException {
+	public List<Staff> viewAllStaff() throws NoSuchRecordException {
 		System.out.println("viewAllStaff");
 		return staffService.viewAllStaff();
 	}
@@ -86,7 +88,7 @@ public class StaffController {
 	// Assign project to other staff
 	// http://localhost:8080/Project/AssignProjectToOtherStaff
 	@PutMapping("/Project/AssignProjectToOtherStaff/{staffID}") // InvalidId
-	public Project AssignProjectToOtherStaff(@RequestBody Project staffId) throws IllegalArgumentException {
+	public Project AssignProjectToOtherStaff(@RequestBody Project staffId) throws NoSuchProjectStaffBugReportExceptionToDelete {
 		return staffService.AssignProjectToOtherStaffUsingID(staffId);
 	}
 
@@ -102,7 +104,7 @@ public class StaffController {
 	@GetMapping("/Report/getAllReport")
 	public List<Report> getAllReport() throws ReportNotFoundException {
 		System.out.println("get all bugs");
-		return staffService.getAllReport();
+		return staffService.getAllReports();
 
 	}
 

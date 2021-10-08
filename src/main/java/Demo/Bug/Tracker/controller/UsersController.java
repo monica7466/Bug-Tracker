@@ -20,6 +20,9 @@ import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 import Demo.Bug.Tracker.exception.InvalidFieldException;
 import Demo.Bug.Tracker.exception.MessageNotFoundException;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToDelete;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToUpdate;
+import Demo.Bug.Tracker.exception.NoSuchRecordException;
 import Demo.Bug.Tracker.exception.ProjectNotFoundException;
 import Demo.Bug.Tracker.exception.ReportNotFoundException;
 import Demo.Bug.Tracker.model.Bug;
@@ -48,7 +51,7 @@ public class UsersController {
 	// user tasks on bugs
 	// add bug
 	@PostMapping("/bug/addBug")
-	public Bug addBug(@RequestBody Bug bug) throws IllegalArgumentException {
+	public Bug addBug(@RequestBody Bug bug) throws InvalidFieldException {
 		return usersService.addBug(bug);
 	}
 
@@ -62,13 +65,13 @@ public class UsersController {
 
 	// To update bug using bugId by user
 	@PutMapping("/bug/updateBug/{bugId}")
-	public Bug updateBugById(@RequestBody Bug bugId) throws IllegalArgumentException {
+	public Bug updateBugById(@RequestBody Bug bugId) throws NoSuchProjectStaffBugReportExceptionToUpdate {
 		return usersService.updateBugById(bugId);
 	}
 
 	// To delete bug using bugId by user
 	@DeleteMapping("/bug/deleteBugById/{bugId}")
-	public int deleteBugById(@PathVariable int bugId) throws IllegalArgumentException {
+	public int deleteBugById(@PathVariable int bugId) throws NoSuchProjectStaffBugReportExceptionToDelete {
 		LOG.info("Delete bug");
 		return usersService.deleteBugById(bugId);
 	}
@@ -76,7 +79,7 @@ public class UsersController {
 	// message tasks
 	// view message
 	@GetMapping("/message/getMessage")
-	public List<Message> getMessage() throws MessageNotFoundException {
+	public List<Message> getMessage() throws NoSuchRecordException {
 		return usersService.getMessage();
 	}
 

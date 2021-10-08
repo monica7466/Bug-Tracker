@@ -8,10 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import Demo.Bug.Tracker.Repository.ProjectRepository;
 import Demo.Bug.Tracker.Repository.ReportRepository;
 import Demo.Bug.Tracker.Repository.StaffRepository;
+import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
+import Demo.Bug.Tracker.exception.InvalidFieldException;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToDelete;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToUpdate;
+import Demo.Bug.Tracker.exception.NoSuchRecordException;
+
 import Demo.Bug.Tracker.exception.ProjectNotFoundException;
+import Demo.Bug.Tracker.exception.ReportNotFoundException;
 import Demo.Bug.Tracker.model.Project;
 import Demo.Bug.Tracker.model.Report;
 import Demo.Bug.Tracker.model.Staff;
@@ -31,18 +39,20 @@ public class StaffService {
 	private static final Logger LOG = LoggerFactory.getLogger(AdministratorService.class);
 
 	// LOGIN
-	public Staff loginStaff(int staffId, String password) {
+	public Staff loginStaff(int staffId, String password) throws IncorrectLoginCredentialsException{
 		Staff staff = null;
 		if (staffRepository.existsById(staffId)
 				&& staffRepository.findById(staffId).get().getStaffPassword().equals(password)) {
 			staff = staffRepository.findById(staffId).get();
-			// Logger.info("Admin login is successfull");
+			LOG.info("Staff login is successfull");
+		}else {
+			throw new IncorrectLoginCredentialsException("Invalid Credentials");
 		}
 		return staff;
 	}
 
 	// view assigned project by staff id
-	public Project ViewAssignedProjectByStaffID(int staffId) {
+	public Project ViewAssignedProjectByStaffID(int staffId) throws ProjectNotFoundException {
 		LOG.info("ViewAssignedProjectByStaffID " + staffId);
 		Optional<Project> optProj = projectRepository.findById(staffId);
 		if (optProj.isEmpty()) {
@@ -53,59 +63,68 @@ public class StaffService {
 	}
 
 	// To add project Report by staff
-	public Report addProjectReport(Report report) {
+	public Report addProjectReport(Report report) throws InvalidFieldException{
 		LOG.info("Add report");
-		try {
+		if (!report.getSolutionDescription().isEmpty() && !report.getStatus().isEmpty()) {
 			return reportRepository.save(report);
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to add project report" + iae.getMessage());
-			return null;
-		}
+		} 
+		    LOG.error("Fields are empty" );
+			throw new InvalidFieldException("Fields are Empty");
 	}
 
 	// To update project Report by staff
-	public Report updateReport(Report projectID) {
+	public Report updateReport(Report projectID) throws NoSuchProjectStaffBugReportExceptionToUpdate{
 		LOG.info("update report by Project ID");
 		try {
 			return reportRepository.save(projectID);
-		} catch (IllegalArgumentException iae) {
+		} catch (NoSuchProjectStaffBugReportExceptionToUpdate iae) {
 			LOG.error("Not able to update project report " + iae.getMessage());
 			return null;
 		}
 	}
 
 	// To delete project Report by staff
-	public int deleteReport(int reportId) {
+	public int deleteReport(int reportId) throws NoSuchProjectStaffBugReportExceptionToDelete {
 		LOG.info("deleteProject");
-		try {
+		if(reportRepository.existsById(reportId)) {
 			reportRepository.deleteById(reportId);
 			return reportId;
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to delete project report" + iae.getMessage());
-			return 0;
-		}
+		} 
+		LOG.error("Given id does not exist to remove Report");
+			throw new NoSuchProjectStaffBugReportExceptionToDelete("Given id does not exist to remove Report");
 	}
 
 	// PROJECT Functionalities FOR STAFF
 
 	// view all staff
-	public List<Staff> viewAllStaff() {
-		LOG.info("viewAllStaff");
-		return (List<Staff>) staffRepository.findAll();
-
+//	public List<Staff> viewAllStaff() {
+//		LOG.info("viewAllStaff");
+//		return (List<Staff>) staffRepository.findAll();
+//
+//	}
+//	
+	public List<Staff> viewAllStaff() throws NoSuchRecordException{
+		List<Staff> staff = staffRepository.findAll();
+		if (!staff.isEmpty()) {
+		LOG.info("getAllStaff");
+		return staff;
+		}
+		LOG.error("No List found");
+		throw new NoSuchRecordException("No List found");
 	}
+	
 	// assign projects to other staff using staff Id
-	public Project AssignProjectToOtherStaffUsingID(Project staffId) {
+	public Project AssignProjectToOtherStaffUsingID(Project staffId) throws NoSuchProjectStaffBugReportExceptionToDelete{
 		LOG.info("updateProject by id");
 		try {
 			return projectRepository.save(staffId);
-		} catch (IllegalArgumentException iae) {
+		} catch (NoSuchProjectStaffBugReportExceptionToDelete iae) {
 			LOG.error("Not able to assign project to other staff using id " + iae.getMessage());
 			return null;
 		}
 	}
 
-	public Report searchReportByProjectID(int projectID) {
+	public Report searchReportByProjectID(int projectID) throws ReportNotFoundException {
 		LOG.info("searchReportByProjectID " + projectID);
 		Optional<Report> optreport = reportRepository.findById(projectID);
 		if (optreport.isEmpty()) {
@@ -116,9 +135,19 @@ public class StaffService {
 	}
 
 	// view all report
-	public List<Report> getAllReport() {
-		LOG.info("Get all Report");
-		return (List<Report>) reportRepository.findAll();
+//	public List<Report> getAllReport() {
+//		LOG.info("Get all Report");
+//		return (List<Report>) reportRepository.findAll();
+//	}
+	
+	public List<Report> getAllReports() throws ReportNotFoundException {
+		List<Report> report = reportRepository.findAll();
+		if (!report.isEmpty()) {
+		LOG.info("getAllReports");
+		return report;
+		}
+		LOG.error("No List found");
+		throw new NoSuchRecordException("No List found");
 	}
 
 

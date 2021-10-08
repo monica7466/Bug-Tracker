@@ -13,9 +13,15 @@ import Demo.Bug.Tracker.Repository.MessageRepository;
 import Demo.Bug.Tracker.Repository.ReportRepository;
 import Demo.Bug.Tracker.Repository.UsersRepository;
 import Demo.Bug.Tracker.exception.BugNotFoundException;
+import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
+import Demo.Bug.Tracker.exception.InvalidFieldException;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToDelete;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToUpdate;
+import Demo.Bug.Tracker.exception.NoSuchRecordException;
 import Demo.Bug.Tracker.exception.ProjectNotFoundException;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
+import Demo.Bug.Tracker.model.Project;
 import Demo.Bug.Tracker.model.Report;
 import Demo.Bug.Tracker.model.Users;
 
@@ -35,30 +41,31 @@ public class UsersService {
 	private static final Logger LOG = LoggerFactory.getLogger(AdministratorService.class);
 
 	// user login
-	public Users loginUser(int userId, String password) {
+	public Users loginUser(int userId, String password) throws IncorrectLoginCredentialsException {
 		Users user = null;
 		if (usersRepository.existsById(userId)
 				&& usersRepository.findById(userId).get().getUserPassword().equals(password)) {
 			user = usersRepository.findById(userId).get();
 			LOG.info("User login is  successfull");
+		} else {
+			throw new IncorrectLoginCredentialsException("Invalid Credentials");
 		}
 		return user;
 	}
 
 	// User Funtionalities on bugs
 	// To add bug by user
-	public Bug addBug(Bug bug) {
+	public Bug addBug(Bug bug) throws InvalidFieldException {
 		LOG.info("Add bug");
-		try {
+		if (!bug.getBugName().isEmpty() && !bug.getDescription().isEmpty() && !bug.getRaisedDate().isEmpty()) {
 			return bugRepository.save(bug);
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to add bug" + iae.getMessage());
-			return null;
 		}
+		LOG.error("Fields are empty");
+		throw new InvalidFieldException("Fields are Empty");
 	}
 
 	// search bugs by bug Id
-	public Bug searchBugByBugId(int bugId) {
+	public Bug searchBugByBugId(int bugId) throws BugNotFoundException {
 		LOG.info("searchBugById " + bugId);
 		Optional<Bug> optBug = bugRepository.findById(bugId);
 		if (optBug.isEmpty()) {
@@ -69,51 +76,54 @@ public class UsersService {
 	}
 
 	// To update bug by user
-	public Bug updateBugById(Bug bugId) {
+	public Bug updateBugById(Bug bugId) throws NoSuchProjectStaffBugReportExceptionToUpdate {
 		LOG.info("update bug by ID");
 		try {
 			return bugRepository.save(bugId);
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to update bug" + iae.getMessage());
+		} catch (NoSuchProjectStaffBugReportExceptionToUpdate iae) {
+			LOG.error("Bug with bug ID not found to update" + iae.getMessage());
 			return null;
 		}
 	}
 
 	// To delete bug by user
-	public int deleteBugById(int bugId) {
-		LOG.info("Delete bug");
-		try {
+	public int deleteBugById(int bugId) throws NoSuchProjectStaffBugReportExceptionToDelete {
+		LOG.info("deleteBug");
+		if (bugRepository.existsById(bugId)) {
 			bugRepository.deleteById(bugId);
 			return bugId;
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to delete bug" + iae.getMessage());
-			return 0;
 		}
+		LOG.error("Given id does not exist to remove Bug");
+		throw new NoSuchProjectStaffBugReportExceptionToDelete("Given id does not exist to remove Bug");
+
 	}
 
 	// Message Functionalities
 	// To view message by user
-	public List<Message> getMessage() {
-		LOG.info("get messages");
-		return (List<Message>) messageRepository.findAll();
+	public List<Message> getMessage() throws NoSuchRecordException {
+		List<Message> message = messageRepository.findAll();
+		if (!message.isEmpty()) {
+			LOG.info("getAllMessage");
+			return message;
+		}
+		LOG.error("No List found");
+		throw new NoSuchRecordException("No List found");
 	}
 
-	// To delete message by user
-	public int deleteMessageById(int messageId) {
+	public int deleteMessageById(int messageId) throws NoSuchProjectStaffBugReportExceptionToDelete {
 		LOG.info("delete Message");
-		try {
+		if (messageRepository.existsById(messageId)) {
 			messageRepository.deleteById(messageId);
 			return messageId;
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to delete " + iae.getMessage());
-			return 0;
 		}
+		LOG.error("Given id does not exist to remove Message");
+		throw new NoSuchProjectStaffBugReportExceptionToDelete("Given id does not exist to remove Message");
+
 	}
-	// Report Functionalities
 
 	// Report Functionalities
 
-	public Report searchReportByProjectIDForUser(int projectID) {
+	public Report searchReportByProjectIDForUser(int projectID) throws ProjectNotFoundException {
 		LOG.info("searchReportByProjectID " + projectID);
 		Optional<Report> optreport = reportRepository.findById(projectID);
 		if (optreport.isEmpty()) {

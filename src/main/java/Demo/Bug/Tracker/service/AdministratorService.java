@@ -20,6 +20,11 @@ import Demo.Bug.Tracker.Repository.StaffRepository;
 import Demo.Bug.Tracker.exception.BugNotFoundException;
 import Demo.Bug.Tracker.exception.IncorrectLoginCredentialsException;
 import Demo.Bug.Tracker.exception.InvalidFieldException;
+import Demo.Bug.Tracker.exception.MessageNotFoundException;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToDelete;
+import Demo.Bug.Tracker.exception.NoSuchProjectStaffBugReportExceptionToUpdate;
+import Demo.Bug.Tracker.exception.NoSuchRecordException;
+
 import Demo.Bug.Tracker.model.Administrator;
 import Demo.Bug.Tracker.model.Bug;
 import Demo.Bug.Tracker.model.Message;
@@ -63,13 +68,18 @@ public class AdministratorService {
 
 	// Project Functionalities
 
-	public List<Project> getAllProject() {
-		LOG.info("getAllProject");
-		return (List<Project>) projectRepository.findAll();
+	public List<Project> getAllProject() throws NoSuchRecordException {
+		List<Project> project = projectRepository.findAll();
+		if (!project.isEmpty()) {
+			LOG.info("getAllProject");
+			return project;
+		}
+		LOG.error("No List found");
+		throw new NoSuchRecordException("No List found");
 	}
 
 	// Search project using projectId by admin
-	public Project searchProjectById(int pid) {
+	public Project searchProjectById(int pid) throws ProjectNotFoundException {
 		Optional<Project> optProj = projectRepository.findById(pid);
 		if (optProj.isEmpty()) {
 			LOG.error("Employee not found.");
@@ -79,80 +89,87 @@ public class AdministratorService {
 	}
 
 	// Add project using projectId by admin
-	public Project addProject(Project project) {
-		
-		if(project.getBugId()!=0) {
+	public Project addProject(Project project) throws InvalidFieldException {
+
+		if (project.getBugId() != 0 && !project.getEndDateOfProject().isEmpty() && !project.getProjectName().isEmpty()
+				&& project.getProjectPriority() != 0 && project.getStaffId() != 0
+				&& !project.getStartDateOfProject().isEmpty()) {
 			LOG.info("Project is added");
 			return projectRepository.save(project);
-		}
-		else {
-			LOG.error("Project not added");
-			throw new InvalidFieldException("Not able to add project");
+		} else {
+			LOG.error("Fields are empty");
+			throw new InvalidFieldException("Fields are empty");
 		}
 	}
 
 	// Update project using projectId by admin
-	public Project updateProjectById(Project projectID) {
+	public Project updateProjectById(Project projectID) throws NoSuchProjectStaffBugReportExceptionToUpdate {
 		try {
 			return projectRepository.save(projectID);
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to update Project" + iae.getMessage());
+		} catch (NoSuchProjectStaffBugReportExceptionToUpdate iae) {
+			LOG.error("Project with project ID not found to update" + iae.getMessage());
 			return null;
 		}
 	}
 
 	// Delete project using projectId by admin
-	public int deleteProject(int pid) { // pid = ProjectID
-		try {
+	public int deleteProject(int pid) throws NoSuchProjectStaffBugReportExceptionToDelete { // pid = ProjectID
+		if (projectRepository.existsById(pid)) {
 			projectRepository.deleteById(pid);
 			return pid;
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to delete Project" + iae.getMessage());
-			return 0;
 		}
+		LOG.error("Given id does not exist to remove Project");
+		throw new NoSuchProjectStaffBugReportExceptionToDelete("Given id does not exist to remove Project");
 	}
 
 	// Staff Functionalities
 
 	// To add new staff by admin
-	public Staff addNewStaff(Staff staff) {
-		try {
+	public Staff addNewStaff(Staff staff) throws InvalidFieldException {
+		if (!staff.getStaffPassword().isEmpty() && !staff.getUserName().isEmpty()) {
+			LOG.info("Staff is added");
 			return staffRepository.save(staff);
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to add Staff" + iae.getMessage());
-			return null;
 		}
+		LOG.error("Fields are empty");
+		throw new InvalidFieldException("Fields are empty");
+
 	}
 
 	// To view all staff by admin
-	public List<Staff> getAllStaff() {
-		LOG.info("get all Staff");
-		return (List<Staff>) staffRepository.findAll();
+
+	public List<Staff> getAllStaff() throws NoSuchRecordException {
+		List<Staff> staff = staffRepository.findAll();
+		if (!staff.isEmpty()) {
+			LOG.info("getAllProject");
+			return staff;
+		}
+		LOG.error("No List found");
+		throw new NoSuchRecordException("No List found");
 	}
 
 	// To update staff by admin
-	public Staff updateStaffById(Staff staffId) {
+	public Staff updateStaffById(Staff staffId) throws NoSuchProjectStaffBugReportExceptionToUpdate {
 		try {
 			return staffRepository.save(staffId);
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to Update Staff" + iae.getMessage());
+		} catch (NoSuchProjectStaffBugReportExceptionToUpdate iae) {
+			LOG.error("Staff with staff ID not found to update" + iae.getMessage());
 			return null;
 		}
 	}
 
 	// To delete staff by admin
-	public Staff deleteStaff(Staff staffId) {
+	public Staff deleteStaff(Staff staffId) throws NoSuchProjectStaffBugReportExceptionToDelete {
 		try {
 			staffRepository.delete(staffId);
 			return staffId;
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to delete Staff" + iae.getMessage());
+		} catch (NoSuchProjectStaffBugReportExceptionToDelete iae) {
+			LOG.error("Given id does not exist to remove Staff");
 			return null;
 		}
 	}
 
 	// search staff using staff Id
-	public Staff searchStaffById(int staffId) {
+	public Staff searchStaffById(int staffId) throws StaffNotFoundException {
 		LOG.info("searchStaffById " + staffId);
 		Optional<Staff> optStaff = staffRepository.findById(staffId);
 		if (optStaff.isEmpty()) {
@@ -164,14 +181,18 @@ public class AdministratorService {
 
 	// Bug Functionalities
 
-	// to view all bugs by admin
-	public List<Bug> getAllBugs() {
-		LOG.info("Get all bugs");
-		return (List<Bug>) bugRepository.findAll();
+	public List<Bug> getAllBugs() throws NoSuchRecordException {
+		List<Bug> bug = bugRepository.findAll();
+		if (!bug.isEmpty()) {
+			LOG.info("getAllBugs");
+			return bug;
+		}
+		LOG.error("No List found");
+		throw new NoSuchRecordException("No List found");
 	}
 
 	// search Bug By Id
-	public Bug searchBugById(int bugId) {
+	public Bug searchBugById(int bugId) throws BugNotFoundException {
 		Optional<Bug> optBug = bugRepository.findById(bugId);
 		if (optBug.isEmpty()) {
 			LOG.error("Bug not found.");
@@ -183,20 +204,24 @@ public class AdministratorService {
 	// Message Functionalities
 
 	// add message
-	public Message addMessage(Message message) {
-		try {
+	public Message addMessage(Message message) throws InvalidFieldException {
+		if (!message.getMessages().isEmpty()) {
 			return messageRepository.save(message);
-		} catch (IllegalArgumentException iae) {
-			LOG.error("Not able to add Message" + iae.getMessage());
-			return null;
 		}
+		LOG.error("Fields are empty");
+		throw new InvalidFieldException("Fields are empty");
+
 	}
 
 	// Report Functionalities
 
-	// View all project reports
-	public List<Report> getAllReports() {
-		LOG.info("Get all bugs");
-		return (List<Report>) reportRepository.findAll();
+	public List<Report> getAllReports() throws NoSuchRecordException {
+		List<Report> report = reportRepository.findAll();
+		if (!report.isEmpty()) {
+			LOG.info("getAllReports");
+			return report;
+		}
+		LOG.error("No List found");
+		throw new NoSuchRecordException("No List found");
 	}
 }
